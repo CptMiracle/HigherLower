@@ -1,5 +1,4 @@
 
-from main import *
 english = [
     "Computer",
     "bag",

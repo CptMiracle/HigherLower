@@ -1,10 +1,9 @@
 import random
 import time
 
+from data import *
 import pygame
 import sys
-from data import *
-from score import *
 
 
 # We create three arrays, one for the spanish words, another for the english words, and another for visited
@@ -44,8 +43,9 @@ print(searches[10])
 def findrandom(visited):
     while True:
         newint = random.randint(0, 19)
-        if visited[newint] is False:
+        if visited[newint-1] is False:
             break
+    visited[newint-1] = True
     return newint
 
 
@@ -97,7 +97,27 @@ while loop:
     while game:
         pos = pygame.mouse.get_pos()
         screen.fill(WHITE)
-        readBoard = open('../HigherLower/data.txt', 'r')
+        readBoard = open('../HigherLower/score', 'r')
+        font_buttons = pygame.font.SysFont("arial", 23)
+        Higher = font_buttons.render("Más", True, BLACK)
+        Lower = font_buttons.render("Menos", True, BLACK)
+
+        pygame.draw.rect(screen, GREEN, (1250,420,250,80))
+        pygame.draw.rect(screen, RED, (1250, 550, 250, 80))
+        pygame.draw.line(screen, BLACK, (screen_W/2, 0), (screen_W/2, screen_H-30), 5)
+
+
+        Button1 = Higher.get_rect()
+        Button1.center = (screen_W / 1.3, screen_H - screen_H / 2.85)
+        screen.blit(Higher, Button1)
+
+        Button2 = Lower.get_rect()
+        Button2.center = (screen_W / 1.3, screen_H - screen_H / 2)
+        screen.blit(Lower, Button2)
+
+
+        left = checkiffilled(visited)
+        right = checkiffilled(visited)
 
 
         pygame.display.flip()
