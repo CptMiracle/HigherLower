@@ -5,18 +5,17 @@ from data import *
 import pygame
 import sys
 
-
 # We create three arrays, one for the spanish words, another for the english words, and another for visited
-#we also create integer arrays for the words
-#we need to keep track of the score
-#we start off with two random words (add them to visited) and keep note of what index/position those words are
-#we access the integer arrays (monthly searches) using the index
-#when button higher or lower is pressed, we compute and check
-#if correct, add point, wait a bit, get rid of the left word (add to visited) and move the right word to the left
-#use randomizer and check condition to see if next word has already been visited
-#if all words have been visited, make all unvisited and make the left word visited before getting a new word for the right side
+# we also create integer arrays for the words
+# we need to keep track of the score
+# we start off with two random words (add them to visited) and keep note of what index/position those words are
+# we access the integer arrays (monthly searches) using the index
+# when button higher or lower is pressed, we compute and check
+# if correct, add point, wait a bit, get rid of the left word (add to visited) and move the right word to the left
+# use randomizer and check condition to see if next word has already been visited
+# if all words have been visited, make all unvisited and make the left word visited before getting a new word for the right side
 
-#if incorrect, end game, go to final screen display score, and choose play again button
+# if incorrect, end game, go to final screen display score, and choose play again button
 
 pygame.init()
 
@@ -40,26 +39,25 @@ final = True
 print(english[10])
 print(searches[10])
 
+
 def findrandom(visited):
     while True:
         newint = random.randint(0, 19)
-        if visited[newint-1] is False:
+        if visited[newint - 1] is False:
             break
-    visited[newint-1] = True
-    return newint
+    visited[newint - 1] = True
+    return newint - 1
 
 
 def checkiffilled(visited):
-    a = False #false = all are visited, true = unvisited
+    a = False  # false = all are visited, true = unvisited
     for i in range(19):
         if visited[i] is False:
             a = True
             break
     if a is False:
-        visited[:] = [False]*19
+        visited[:] = [False] * 19
     return findrandom(visited)
-
-
 
 
 while loop:
@@ -94,31 +92,64 @@ while loop:
                 if textRect2.collidepoint(pos):
                     intro = False
 
+    new_word = True
+    new_game = True
+    left = 0
+    right = 0
+    score = 0
     while game:
         pos = pygame.mouse.get_pos()
         screen.fill(WHITE)
         readBoard = open('../HigherLower/score', 'r')
+        font_text = pygame.font.SysFont("arial", 40)
         font_buttons = pygame.font.SysFont("arial", 23)
         Higher = font_buttons.render("Más", True, BLACK)
         Lower = font_buttons.render("Menos", True, BLACK)
 
-        pygame.draw.rect(screen, GREEN, (1250,420,250,80))
-        pygame.draw.rect(screen, RED, (1250, 550, 250, 80))
-        pygame.draw.line(screen, BLACK, (screen_W/2, 0), (screen_W/2, screen_H-30), 5)
-
+        pygame.draw.rect(screen, GREEN, (1250, 500, 250, 80))
+        pygame.draw.rect(screen, RED, (1250, 640, 250, 80))
+        pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
 
         Button1 = Higher.get_rect()
-        Button1.center = (screen_W / 1.3, screen_H - screen_H / 2.85)
+        Button1.center = (screen_W / 1.3, screen_H - screen_H / 4)
         screen.blit(Higher, Button1)
 
         Button2 = Lower.get_rect()
-        Button2.center = (screen_W / 1.3, screen_H - screen_H / 2)
+        Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.5)
         screen.blit(Lower, Button2)
 
+        if new_word is True:
+            left = right
+            if new_game is True:
+                left = checkiffilled(visited)
+                new_game = False
 
-        left = checkiffilled(visited)
-        right = checkiffilled(visited)
+            right = checkiffilled(visited)
+            new_word = False
 
+        left_text = font_text.render(spanish[left], True, BLACK)
+        left_english = font_text.render(english[left], True, BLACK)
+        left_score = font_text.render(searches[left] + " búsquedas", True, BLACK)
+
+        left_word = left_text.get_rect()
+        left_word.center = (screen_W / 4, screen_H - screen_H / 1.3)
+        screen.blit(left_text, left_word)
+
+        left_english_text = left_english.get_rect()
+        left_english_text.center = (screen_W / 4, screen_H - screen_H / 1.5)
+        screen.blit(left_english, left_english_text)
+
+        left_searches = left_score.get_rect()
+        left_searches.center = (screen_W / 4, screen_H - screen_H / 1.8)
+        screen.blit(left_score, left_searches)
+
+
+
+        right_text = font_text.render(spanish[right], True, BLACK)
+
+        right_word = right_text.get_rect()
+        right_word.center = (screen_W / 1.3, screen_H - screen_H / 1.3)
+        screen.blit(right_text, right_word)
 
         pygame.display.flip()
         for event in pygame.event.get():
@@ -128,9 +159,21 @@ while loop:
                 game = False
                 final = False
             if event.type == pygame.MOUSEBUTTONUP:
-                loop = False
+                if Button1.collidepoint(pos):  # higher
+                    if searches[right] >= searches[left]:
+                        score += 1
+                        print("correct")
+                    else:
+                        loop = False
+                        game = False
 
-
+                elif Button2.collidepoint(pos):  # lower
+                    if searches[right] <= searches[left]:
+                        score += 1
+                        print("correct")
+                    else:
+                        loop = False
+                        game = False
 
 pygame.quit()
 sys.exit()
