@@ -103,19 +103,28 @@ while loop:
         readBoard = open('../HigherLower/score', 'r')
         font_text = pygame.font.SysFont("arial", 40)
         font_buttons = pygame.font.SysFont("arial", 23)
+        font_score = pygame.font.SysFont("arial", 18)
         Higher = font_buttons.render("Más", True, BLACK)
         Lower = font_buttons.render("Menos", True, BLACK)
+        score_display = font_score.render(str(score), True, BLACK)
+        highscore_display = font_score.render(str(readBoard.read()), True, BLACK)
 
-        pygame.draw.rect(screen, GREEN, (1250, 500, 250, 80))
-        pygame.draw.rect(screen, RED, (1250, 640, 250, 80))
+
+        if score > int(float(readBoard.read())):
+            writeBoard = open('../HigherLower/score', 'w')
+            writeBoard.write(str(score))
+
+
+        pygame.draw.rect(screen, GREEN, (1250, 350, 250, 80))
+        pygame.draw.rect(screen, RED, (1250, 480, 250, 80))
         pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
 
         Button1 = Higher.get_rect()
-        Button1.center = (screen_W / 1.3, screen_H - screen_H / 4)
+        Button1.center = (screen_W / 1.3, screen_H - screen_H / 1.77)
         screen.blit(Higher, Button1)
 
         Button2 = Lower.get_rect()
-        Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.5)
+        Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.35)
         screen.blit(Lower, Button2)
 
         if new_word is True:
@@ -151,6 +160,15 @@ while loop:
         right_word.center = (screen_W / 1.3, screen_H - screen_H / 1.3)
         screen.blit(right_text, right_word)
 
+
+        score_text = score_display.get_rect()
+        score_text.center = (screen_W / 1.1, screen_H - screen_H / 15)
+        screen.blit(score_display, score_text)
+
+        highscore_text = highscore_display.get_rect()
+        highscore_text.center = (screen_W / 1.3, screen_H - screen_H / 15)
+        screen.blit(highscore_display, highscore_text)
+
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -163,6 +181,7 @@ while loop:
                     if searches[right] >= searches[left]:
                         score += 1
                         print("correct")
+                        new_word = True
                     else:
                         loop = False
                         game = False
@@ -171,6 +190,7 @@ while loop:
                     if searches[right] <= searches[left]:
                         score += 1
                         print("correct")
+                        new_word = True
                     else:
                         loop = False
                         game = False
