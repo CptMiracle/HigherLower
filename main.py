@@ -36,8 +36,7 @@ loop = True
 intro = True
 game = True
 final = True
-print(english[10])
-print(searches[10])
+high_score = 0
 
 
 def findrandom(visited):
@@ -97,35 +96,40 @@ while loop:
     left = 0
     right = 0
     score = 0
+    display_buttons = True
+
     while game:
         pos = pygame.mouse.get_pos()
         screen.fill(WHITE)
-        readBoard = open('../HigherLower/score', 'r')
         font_text = pygame.font.SysFont("arial", 40)
         font_buttons = pygame.font.SysFont("arial", 23)
         font_score = pygame.font.SysFont("arial", 18)
         Higher = font_buttons.render("Más", True, BLACK)
         Lower = font_buttons.render("Menos", True, BLACK)
         score_display = font_score.render(str(score), True, BLACK)
-        highscore_display = font_score.render(str(readBoard.read()), True, BLACK)
+        score_current = font_score.render("Score: ", True, BLACK)
+        highscore_display = font_score.render(str(high_score), True, BLACK)
+        highscore = font_score.render("Highscore: ", True, BLACK)
+
+        if score > high_score:
+            high_score = score
 
 
-        if score > int(float(readBoard.read())):
-            writeBoard = open('../HigherLower/score', 'w')
-            writeBoard.write(str(score))
 
 
+        #make the higher/lower.get_rect actually the button and not the text
         pygame.draw.rect(screen, GREEN, (1250, 350, 250, 80))
         pygame.draw.rect(screen, RED, (1250, 480, 250, 80))
         pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
-
         Button1 = Higher.get_rect()
-        Button1.center = (screen_W / 1.3, screen_H - screen_H / 1.77)
-        screen.blit(Higher, Button1)
-
         Button2 = Lower.get_rect()
-        Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.35)
-        screen.blit(Lower, Button2)
+        screen_click = screen.get_rect()
+        if display_buttons is True:
+            Button1.center = (screen_W / 1.3, screen_H - screen_H / 1.77)
+            screen.blit(Higher, Button1)
+
+            Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.35)
+            screen.blit(Lower, Button2)
 
         if new_word is True:
             left = right
@@ -138,7 +142,7 @@ while loop:
 
         left_text = font_text.render(spanish[left], True, BLACK)
         left_english = font_text.render(english[left], True, BLACK)
-        left_score = font_text.render(searches[left] + " búsquedas", True, BLACK)
+        left_score = font_text.render(searches[left] + " búsquedas (mensual)", True, BLACK)
 
         left_word = left_text.get_rect()
         left_word.center = (screen_W / 4, screen_H - screen_H / 1.3)
@@ -152,22 +156,27 @@ while loop:
         left_searches.center = (screen_W / 4, screen_H - screen_H / 1.8)
         screen.blit(left_score, left_searches)
 
-
-
         right_text = font_text.render(spanish[right], True, BLACK)
 
         right_word = right_text.get_rect()
         right_word.center = (screen_W / 1.3, screen_H - screen_H / 1.3)
         screen.blit(right_text, right_word)
 
-
-        score_text = score_display.get_rect()
+        score_text = score_current.get_rect()
         score_text.center = (screen_W / 1.1, screen_H - screen_H / 15)
-        screen.blit(score_display, score_text)
+        screen.blit(score_current, score_text)
+
+        score_number = score_display.get_rect()
+        score_number.center = (screen_W / 1.07, screen_H - screen_H / 15)
+        screen.blit(score_display, score_number)
 
         highscore_text = highscore_display.get_rect()
-        highscore_text.center = (screen_W / 1.3, screen_H - screen_H / 15)
+        highscore_text.center = (screen_W / 1.2, screen_H - screen_H / 15)
         screen.blit(highscore_display, highscore_text)
+
+        highscore_number = highscore.get_rect()
+        highscore_number.center = (screen_W / 1.25, screen_H - screen_H / 15)
+        screen.blit(highscore, highscore_number)
 
         pygame.display.flip()
         for event in pygame.event.get():
@@ -177,19 +186,26 @@ while loop:
                 game = False
                 final = False
             if event.type == pygame.MOUSEBUTTONUP:
+                next_screen = False
                 if Button1.collidepoint(pos):  # higher
                     if searches[right] >= searches[left]:
                         score += 1
-                        print("correct")
+                        display_buttons = False
+
                         new_word = True
+
+
                     else:
                         loop = False
                         game = False
-
+                    while next_screen is False:
+                        if screen_click.collidepoint(pos):
+                            next_screen = True
                 elif Button2.collidepoint(pos):  # lower
                     if searches[right] <= searches[left]:
                         score += 1
-                        print("correct")
+                        # wait here
+                        display_buttons = False
                         new_word = True
                     else:
                         loop = False
