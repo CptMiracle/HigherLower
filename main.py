@@ -59,22 +59,24 @@ def checkiffilled(visited):
     return findrandom(visited)
 
 
+#CREATE A RULES STAGE
+
 while loop:
     screen_W = screen.get_width()
     screen_H = screen.get_height()
     while intro:
         pos = pygame.mouse.get_pos()
         screen.fill(WHITE)
-        image = pygame.image.load("../HigherLower/images/higherorlower.png")
+        imagelogo = pygame.image.load("../HigherLower/images/higherorlower.png")
         font_title = pygame.font.SysFont("arial bold", 80)
         title_text = font_title.render("Higher Lower", True, BLACK)
 
         font_title = pygame.font.SysFont("arial bold", 60)
         play_text = font_title.render("Play game", True, BLACK)
 
-        logo_image = image.get_rect()
+        logo_image = imagelogo.get_rect()
         logo_image.center = (screen_W / 2, screen_H / 2.8)
-        screen.blit(image, logo_image)
+        screen.blit(imagelogo, logo_image)
 
         textRect2 = title_text.get_rect()
         textRect2.center = (screen_W / 1.83, screen_H - screen_H / 3)
@@ -97,6 +99,9 @@ while loop:
     right = 0
     score = 0
     display_buttons = True
+    correct = False
+    wrong = False
+    pause = False
 
     while game:
         pos = pygame.mouse.get_pos()
@@ -114,17 +119,39 @@ while loop:
         if score > high_score:
             high_score = score
 
+        imagecorrect = pygame.image.load("../HigherLower/images/correct.png")
+        image_correct = imagecorrect.get_rect()
+        image_correct.center = (screen_W / 2, screen_H / 2.8)
+
+        imagewrong = pygame.image.load("../HigherLower/images/wrong.png")
+        image_wrong = imagewrong.get_rect()
+        image_wrong.center = (screen_W / 2, screen_H / 2.8)
+
+        if pause is True:
+            pygame.time.wait(1000)
+            pause = False
+            if wrong is True:
+                loop = False
+                game = False
+        if correct is True:
+            screen.blit(imagecorrect, image_correct)
+            pause = True
+            correct = False
+        elif wrong is True:
+            screen.blit(imagewrong, image_wrong)
+            pause = True
 
 
 
         #make the higher/lower.get_rect actually the button and not the text
-        pygame.draw.rect(screen, GREEN, (1250, 350, 250, 80))
-        pygame.draw.rect(screen, RED, (1250, 480, 250, 80))
+
         pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
         Button1 = Higher.get_rect()
         Button2 = Lower.get_rect()
         screen_click = screen.get_rect()
         if display_buttons is True:
+            pygame.draw.rect(screen, GREEN, (1250, 350, 250, 80))
+            pygame.draw.rect(screen, RED, (1250, 480, 250, 80))
             Button1.center = (screen_W / 1.3, screen_H - screen_H / 1.77)
             screen.blit(Higher, Button1)
 
@@ -178,6 +205,8 @@ while loop:
         highscore_number.center = (screen_W / 1.25, screen_H - screen_H / 15)
         screen.blit(highscore, highscore_number)
 
+
+
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -186,30 +215,27 @@ while loop:
                 game = False
                 final = False
             if event.type == pygame.MOUSEBUTTONUP:
-                next_screen = False
+
                 if Button1.collidepoint(pos):  # higher
                     if searches[right] >= searches[left]:
+                        correct = True
                         score += 1
                         display_buttons = False
-
                         new_word = True
-
-
                     else:
-                        loop = False
-                        game = False
-                    while next_screen is False:
-                        if screen_click.collidepoint(pos):
-                            next_screen = True
+                        wrong = True
+
+
                 elif Button2.collidepoint(pos):  # lower
                     if searches[right] <= searches[left]:
+                        correct = True
                         score += 1
-                        # wait here
                         display_buttons = False
                         new_word = True
                     else:
-                        loop = False
-                        game = False
+                        wrong = True
+
+
 
 pygame.quit()
 sys.exit()
