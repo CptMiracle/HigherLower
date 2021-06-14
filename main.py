@@ -34,8 +34,8 @@ BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 loop = True
 intro = True
-game = True
-final = True
+game = False
+final = False
 high_score = 0
 
 
@@ -92,6 +92,7 @@ while loop:
             if event.type == pygame.MOUSEBUTTONUP:
                 if textRect2.collidepoint(pos):
                     intro = False
+                    game = True
 
     new_word = True
     new_game = True
@@ -116,6 +117,13 @@ while loop:
         highscore_display = font_score.render(str(high_score), True, BLACK)
         highscore = font_score.render("Highscore: ", True, BLACK)
 
+
+        right_score = font_text.render(searches[right] + " búsquedas (mensual)", True, BLACK)
+        right_searches = right_score.get_rect()
+        right_searches.center = (screen_W / 1.3, screen_H - screen_H / 1.7)
+
+
+
         if score > high_score:
             high_score = score
 
@@ -126,26 +134,33 @@ while loop:
         imagewrong = pygame.image.load("../HigherLower/images/wrong.png")
         image_wrong = imagewrong.get_rect()
         image_wrong.center = (screen_W / 2, screen_H / 2.8)
+        pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
 
         if pause is True:
-            pygame.time.wait(1000)
+
+            pygame.time.wait(3000)
+            display_buttons = True
             pause = False
             if wrong is True:
+                pygame.time.wait(2000)
                 loop = False
                 game = False
+                final = True
         if correct is True:
             screen.blit(imagecorrect, image_correct)
+            screen.blit(right_score, right_searches)
             pause = True
             correct = False
         elif wrong is True:
             screen.blit(imagewrong, image_wrong)
+            screen.blit(right_score, right_searches)
             pause = True
 
 
 
         #make the higher/lower.get_rect actually the button and not the text
 
-        pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
+
         Button1 = Higher.get_rect()
         Button2 = Lower.get_rect()
         screen_click = screen.get_rect()
@@ -158,7 +173,7 @@ while loop:
             Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.35)
             screen.blit(Lower, Button2)
 
-        if new_word is True:
+        if new_word is True and pause is False:
             left = right
             if new_game is True:
                 left = checkiffilled(visited)
@@ -220,22 +235,46 @@ while loop:
                     if searches[right] >= searches[left]:
                         correct = True
                         score += 1
-                        display_buttons = False
                         new_word = True
                     else:
                         wrong = True
+                    display_buttons = False
 
 
                 elif Button2.collidepoint(pos):  # lower
                     if searches[right] <= searches[left]:
                         correct = True
                         score += 1
-                        display_buttons = False
                         new_word = True
                     else:
                         wrong = True
+                    display_buttons = False
+
+    while final:
+        pos = pygame.mouse.get_pos()
+        screen.fill(WHITE)
+        font_title = pygame.font.SysFont("arial bold", 80)
+        title_text = font_title.render("Your score: "+str(score), True, BLACK)
+
+        font_title = pygame.font.SysFont("arial bold", 60)
+        play_text = font_title.render("Play game", True, BLACK)
 
 
+        textRect2 = title_text.get_rect()
+        textRect2.center = (screen_W / 1.83, screen_H - screen_H / 3)
+        screen.blit(title_text, textRect2)
+
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                loop = False
+                intro = False
+                game = False
+                final = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                if textRect2.collidepoint(pos):
+                    final = False
+                    game = True
 
 pygame.quit()
 sys.exit()
