@@ -93,7 +93,6 @@ while loop:
                 if textRect2.collidepoint(pos):
                     intro = False
                     game = True
-
     new_word = True
     new_game = True
     left = 0
@@ -103,6 +102,9 @@ while loop:
     correct = False
     wrong = False
     pause = False
+    clickable = True
+    rect1 = 0
+    rect2 = 0
 
     while game:
         pos = pygame.mouse.get_pos()
@@ -120,7 +122,7 @@ while loop:
 
         right_score = font_text.render(searches[right] + " búsquedas (mensual)", True, BLACK)
         right_searches = right_score.get_rect()
-        right_searches.center = (screen_W / 1.3, screen_H - screen_H / 1.7)
+        right_searches.center = (screen_W / 1.3, screen_H - screen_H / 1.8)
 
 
 
@@ -135,15 +137,18 @@ while loop:
         image_wrong = imagewrong.get_rect()
         image_wrong.center = (screen_W / 2, screen_H / 2.8)
         pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
+        right_english = font_text.render(english[right], True, BLACK)
+        right_english_text = right_english.get_rect()
+        right_english_text.center = (screen_W / 1.3, screen_H - screen_H / 1.5)
 
         if pause is True:
 
-            pygame.time.wait(3000)
+            pygame.time.wait(4000)
             display_buttons = True
             pause = False
+            clickable = True
             if wrong is True:
-                pygame.time.wait(2000)
-                loop = False
+                pygame.time.wait(1000)
                 game = False
                 final = True
         if correct is True:
@@ -151,10 +156,12 @@ while loop:
             screen.blit(right_score, right_searches)
             pause = True
             correct = False
+            screen.blit(right_english, right_english_text)
         elif wrong is True:
             screen.blit(imagewrong, image_wrong)
             screen.blit(right_score, right_searches)
             pause = True
+            screen.blit(right_english, right_english_text)
 
 
 
@@ -165,8 +172,8 @@ while loop:
         Button2 = Lower.get_rect()
         screen_click = screen.get_rect()
         if display_buttons is True:
-            pygame.draw.rect(screen, GREEN, (1250, 350, 250, 80))
-            pygame.draw.rect(screen, RED, (1250, 480, 250, 80))
+            rect1 = pygame.draw.rect(screen, GREEN, (1250, 350, 250, 80))
+            rect2 = pygame.draw.rect(screen, RED, (1250, 480, 250, 80))
             Button1.center = (screen_W / 1.3, screen_H - screen_H / 1.77)
             screen.blit(Higher, Button1)
 
@@ -185,6 +192,7 @@ while loop:
         left_text = font_text.render(spanish[left], True, BLACK)
         left_english = font_text.render(english[left], True, BLACK)
         left_score = font_text.render(searches[left] + " búsquedas (mensual)", True, BLACK)
+        right_text = font_text.render(spanish[right], True, BLACK)
 
         left_word = left_text.get_rect()
         left_word.center = (screen_W / 4, screen_H - screen_H / 1.3)
@@ -198,7 +206,6 @@ while loop:
         left_searches.center = (screen_W / 4, screen_H - screen_H / 1.8)
         screen.blit(left_score, left_searches)
 
-        right_text = font_text.render(spanish[right], True, BLACK)
 
         right_word = right_text.get_rect()
         right_word.center = (screen_W / 1.3, screen_H - screen_H / 1.3)
@@ -229,40 +236,56 @@ while loop:
                 intro = False
                 game = False
                 final = False
-            if event.type == pygame.MOUSEBUTTONUP:
+            if clickable:
+                if event.type == pygame.MOUSEBUTTONUP:
 
-                if Button1.collidepoint(pos):  # higher
-                    if searches[right] >= searches[left]:
-                        correct = True
-                        score += 1
+                    if rect1.collidepoint(pos):  # higher
+
+                        if int(searches[right]) >= int(searches[left]):
+                            correct = True
+                            score += 1
+                        else:
+                            wrong = True
                         new_word = True
-                    else:
-                        wrong = True
-                    display_buttons = False
+                        display_buttons = False
+                        clickable = False
 
 
-                elif Button2.collidepoint(pos):  # lower
-                    if searches[right] <= searches[left]:
-                        correct = True
-                        score += 1
+                    elif rect2.collidepoint(pos):  # lower
+
+                        if int(searches[left]) >= int(searches[right]):
+                            correct = True
+                            score += 1
+                        else:
+                            wrong = True
                         new_word = True
-                    else:
-                        wrong = True
-                    display_buttons = False
+                        display_buttons = False
+                        clickable = False
+
 
     while final:
         pos = pygame.mouse.get_pos()
         screen.fill(WHITE)
         font_title = pygame.font.SysFont("arial bold", 80)
         title_text = font_title.render("Your score: "+str(score), True, BLACK)
+        highscore_text = font_title.render("High score: "+str(high_score), True, BLACK)
+        play_again = font_title.render("Play again", True, BLACK)
 
         font_title = pygame.font.SysFont("arial bold", 60)
-        play_text = font_title.render("Play game", True, BLACK)
+        play_text = font_title.render("Play again", True, BLACK)
 
 
         textRect2 = title_text.get_rect()
-        textRect2.center = (screen_W / 1.83, screen_H - screen_H / 3)
+        textRect2.center = (screen_W / 2, screen_H - screen_H / 1.4)
         screen.blit(title_text, textRect2)
+
+        textRect3 = title_text.get_rect()
+        textRect3.center = (screen_W / 2, screen_H - screen_H / 1.7)
+        screen.blit(highscore_text, textRect3)
+
+        textRect4 = title_text.get_rect()
+        textRect4.center = (screen_W / 2, screen_H - screen_H / 2.5)
+        screen.blit(play_again, textRect4)
 
         pygame.display.flip()
         for event in pygame.event.get():
@@ -272,9 +295,11 @@ while loop:
                 game = False
                 final = False
             if event.type == pygame.MOUSEBUTTONUP:
-                if textRect2.collidepoint(pos):
+                if textRect4.collidepoint(pos):
                     final = False
                     game = True
+                    loop = True
+
 
 pygame.quit()
 sys.exit()
