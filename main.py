@@ -33,7 +33,7 @@ high_score = 0
 
 def findrandom(visited):
     while True:
-        newint = random.randint(0, 35)
+        newint = random.randint(0, 34)
         if visited[newint - 1] is False:
             break
     visited[newint - 1] = True
@@ -42,12 +42,12 @@ def findrandom(visited):
 
 def checkiffilled(visited):
     a = False  # false = all are visited, true = unvisited
-    for i in range(35):
+    for i in range(34):
         if visited[i] is False:
             a = True
             break
     if a is False:
-        visited[:] = [False] * 35
+        visited[:] = [False] * 34
     return findrandom(visited)
 
 
@@ -93,7 +93,7 @@ while loop:
         font_title = pygame.font.SysFont("arial bold", 40)
 
         play_text = font_title.render("Continue", True, BLACK)
-        rule1 = font_title.render("Cuando juegas a este juego, se le mostrarán dos palabras o frases.", True, BLACK)
+        rule1 = font_title.render("Se le mostrarán dos palabras o frases.", True, BLACK)
         rule2 = font_title.render("Tú decides si la palabra de la derecha tiene más o menos búsquedas que la palabra de la izquierda.", True, BLACK)
         rule3 = font_title.render("Si es más, escriba Más.", True, BLACK)
         rule4 = font_title.render("Si es menos, escriba Menos.", True, BLACK)
@@ -146,7 +146,7 @@ while loop:
         font_title = pygame.font.SysFont("arial bold", 40)
 
         play_text = font_title.render("Continue", True, BLACK)
-        rule1 = font_title.render("When you play this game, you will be shown two words/phrases.", True, BLACK)
+        rule1 = font_title.render("You will be shown two words/phrases.", True, BLACK)
         rule2 = font_title.render("You decide whether the word on the right has more or less searches than the word on the left.", True, BLACK)
         rule3 = font_title.render("If more, type Más.", True, BLACK)
         rule4 = font_title.render("If less, type Menos.", True, BLACK)

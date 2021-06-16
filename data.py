@@ -18,7 +18,6 @@ english = [
     "Grandma",
     "Ghost",
     "Poison",
-    "Courage",
     "Instrument",
     "Mexico City",
     "Telephone",
@@ -57,7 +56,6 @@ spanish = [
     "Abuela",
     "Fantasma",
     "Veneno",
-    "Coraje",
     "Instrumento",
     "Ciudad de México",
     "Teléfono",
@@ -95,7 +93,6 @@ searches = [
     "90500",
     "201000",
     "60500",
-    "55000",
     "80000",
     "90500",
     "49500",
@@ -114,4 +111,4 @@ searches = [
     "3350000",
 
 ]
-visited = [False for i in range(35)]
+visited = [False for i in range(34)]
