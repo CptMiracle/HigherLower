@@ -357,7 +357,6 @@ while loop:
                         new_word = True
                         display_buttons = False
                         clickable = False
-                    print(visited)
 
 
     while final:
