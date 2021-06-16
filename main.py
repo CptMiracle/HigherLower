@@ -5,22 +5,10 @@ from data import *
 import pygame
 import sys
 
-# We create three arrays, one for the spanish words, another for the english words, and another for visited
-# we also create integer arrays for the words
-# we need to keep track of the score
-# we start off with two random words (add them to visited) and keep note of what index/position those words are
-# we access the integer arrays (monthly searches) using the index
-# when button higher or lower is pressed, we compute and check
-# if correct, add point, wait a bit, get rid of the left word (add to visited) and move the right word to the left
-# use randomizer and check condition to see if next word has already been visited
-# if all words have been visited, make all unvisited and make the left word visited before getting a new word for the right side
-
-# if incorrect, end game, go to final screen display score, and choose play again button
 
 pygame.init()
 
 # set the size for the surface (screen)
-# MUST BE PLAYED ON 1000 x 800
 screen = pygame.display.set_mode((1800, 900), 0)
 # set the caption for the screen
 pygame.display.set_caption("Higher Lower")
@@ -32,8 +20,12 @@ BLUE = (0, 0, 255)
 LIGHT_BLUE = (153, 204, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
+WARM = (255, 246, 237)
 loop = True
+
 intro = True
+rules = False
+rules2 = False
 game = False
 final = False
 high_score = 0
@@ -41,7 +33,7 @@ high_score = 0
 
 def findrandom(visited):
     while True:
-        newint = random.randint(0, 19)
+        newint = random.randint(0, 35)
         if visited[newint - 1] is False:
             break
     visited[newint - 1] = True
@@ -50,23 +42,21 @@ def findrandom(visited):
 
 def checkiffilled(visited):
     a = False  # false = all are visited, true = unvisited
-    for i in range(19):
+    for i in range(35):
         if visited[i] is False:
             a = True
             break
     if a is False:
-        visited[:] = [False] * 19
+        visited[:] = [False] * 35
     return findrandom(visited)
 
-
-#CREATE A RULES STAGE
 
 while loop:
     screen_W = screen.get_width()
     screen_H = screen.get_height()
     while intro:
         pos = pygame.mouse.get_pos()
-        screen.fill(WHITE)
+        screen.fill(WARM)
         imagelogo = pygame.image.load("../HigherLower/images/higherorlower.png")
         font_title = pygame.font.SysFont("arial bold", 80)
         title_text = font_title.render("Higher Lower", True, BLACK)
@@ -87,12 +77,123 @@ while loop:
             if event.type == pygame.QUIT:
                 loop = False
                 intro = False
+                rules = False
                 game = False
                 final = False
             if event.type == pygame.MOUSEBUTTONUP:
                 if textRect2.collidepoint(pos):
                     intro = False
+                    rules = True
+
+
+
+    while rules:
+        pos = pygame.mouse.get_pos()
+        screen.fill(WARM)
+        font_title = pygame.font.SysFont("arial bold", 40)
+
+        play_text = font_title.render("Continue", True, BLACK)
+        rule1 = font_title.render("Cuando juegas a este juego, se le mostrarán dos palabras o frases.", True, BLACK)
+        rule2 = font_title.render("Tú decides si la palabra de la derecha tiene más o menos búsquedas que la palabra de la izquierda.", True, BLACK)
+        rule3 = font_title.render("Si es más, escriba Más.", True, BLACK)
+        rule4 = font_title.render("Si es menos, escriba Menos.", True, BLACK)
+        rule5 = font_title.render("Si respondes bien la pregunta, obtienes un punto, de lo contrario, el juego termina.", True, BLACK)
+        rule6 = font_title.render("Consejo: Si eres alguien en Internet, ¿buscarías esa palabra?", True, BLACK)
+        textRect2 = play_text.get_rect()
+        textRect2.center = (screen_W / 2, screen_H - screen_H / 6)
+        screen.blit(play_text, textRect2)
+
+        rule1rect = rule1.get_rect()
+        rule1rect.center = (screen_W / 2, screen_H - screen_H / 1.2)
+        screen.blit(rule1, rule1rect)
+
+        rule2rect = rule2.get_rect()
+        rule2rect.center = (screen_W / 2, screen_H - screen_H / 1.4)
+        screen.blit(rule2, rule2rect)
+
+        rule3rect = rule3.get_rect()
+        rule3rect.center = (screen_W / 2, screen_H - screen_H / 1.6)
+        screen.blit(rule3, rule3rect)
+
+        rule4rect = rule4.get_rect()
+        rule4rect.center = (screen_W / 2, screen_H - screen_H / 1.9)
+        screen.blit(rule4, rule4rect)
+
+        rule5rect = rule5.get_rect()
+        rule5rect.center = (screen_W / 2, screen_H - screen_H / 2.3)
+        screen.blit(rule5, rule5rect)
+
+        rule6rect = rule6.get_rect()
+        rule6rect.center = (screen_W / 2, screen_H - screen_H / 2.9)
+        screen.blit(rule6, rule6rect)
+
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                loop = False
+                intro = False
+                rules = False
+                game = False
+                final = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                if textRect2.collidepoint(pos):
+                    rules = False
+                    rules2 = True
+
+    while rules2:
+        pos = pygame.mouse.get_pos()
+        screen.fill(WARM)
+        font_title = pygame.font.SysFont("arial bold", 40)
+
+        play_text = font_title.render("Continue", True, BLACK)
+        rule1 = font_title.render("When you play this game, you will be shown two words/phrases.", True, BLACK)
+        rule2 = font_title.render("You decide whether the word on the right has more or less searches than the word on the left.", True, BLACK)
+        rule3 = font_title.render("If more, type Más.", True, BLACK)
+        rule4 = font_title.render("If less, type Menos.", True, BLACK)
+        rule5 = font_title.render("If you get the question right you get a point, otherwise the game is over.", True, BLACK)
+        rule6 = font_title.render("Tip: If you are someone on the internet, would you search for that word?", True, BLACK)
+        textRect2 = play_text.get_rect()
+        textRect2.center = (screen_W / 2, screen_H - screen_H / 6)
+        screen.blit(play_text, textRect2)
+
+        rule1rect = rule1.get_rect()
+        rule1rect.center = (screen_W / 2, screen_H - screen_H / 1.2)
+        screen.blit(rule1, rule1rect)
+
+        rule2rect = rule2.get_rect()
+        rule2rect.center = (screen_W / 2, screen_H - screen_H / 1.4)
+        screen.blit(rule2, rule2rect)
+
+        rule3rect = rule3.get_rect()
+        rule3rect.center = (screen_W / 2, screen_H - screen_H / 1.6)
+        screen.blit(rule3, rule3rect)
+
+        rule4rect = rule4.get_rect()
+        rule4rect.center = (screen_W / 2, screen_H - screen_H / 1.9)
+        screen.blit(rule4, rule4rect)
+
+        rule5rect = rule5.get_rect()
+        rule5rect.center = (screen_W / 2, screen_H - screen_H / 2.3)
+        screen.blit(rule5, rule5rect)
+
+        rule6rect = rule6.get_rect()
+        rule6rect.center = (screen_W / 2, screen_H - screen_H / 2.9)
+        screen.blit(rule6, rule6rect)
+
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                loop = False
+                intro = False
+                rules = False
+                rules2 = False
+                game = False
+                final = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                if textRect2.collidepoint(pos):
+                    rules2 = False
                     game = True
+
     new_word = True
     new_game = True
     left = 0
@@ -105,10 +206,9 @@ while loop:
     clickable = True
     rect1 = 0
     rect2 = 0
-
     while game:
         pos = pygame.mouse.get_pos()
-        screen.fill(WHITE)
+        screen.fill(WARM)
         font_text = pygame.font.SysFont("arial", 40)
         font_buttons = pygame.font.SysFont("arial", 23)
         font_score = pygame.font.SysFont("arial", 18)
@@ -120,7 +220,7 @@ while loop:
         highscore = font_score.render("Highscore: ", True, BLACK)
 
 
-        right_score = font_text.render(searches[right] + " búsquedas (mensual)", True, BLACK)
+        right_score = font_text.render(searches[right] + " búsquedas", True, BLACK)
         right_searches = right_score.get_rect()
         right_searches.center = (screen_W / 1.3, screen_H - screen_H / 1.8)
 
@@ -136,7 +236,6 @@ while loop:
         imagewrong = pygame.image.load("../HigherLower/images/wrong.png")
         image_wrong = imagewrong.get_rect()
         image_wrong.center = (screen_W / 2, screen_H / 2.8)
-        pygame.draw.line(screen, BLACK, (screen_W / 2, 0), (screen_W / 2, screen_H - 30), 5)
         right_english = font_text.render(english[right], True, BLACK)
         right_english_text = right_english.get_rect()
         right_english_text.center = (screen_W / 1.3, screen_H - screen_H / 1.5)
@@ -164,10 +263,6 @@ while loop:
             screen.blit(right_english, right_english_text)
 
 
-
-        #make the higher/lower.get_rect actually the button and not the text
-
-
         Button1 = Higher.get_rect()
         Button2 = Lower.get_rect()
         screen_click = screen.get_rect()
@@ -191,7 +286,7 @@ while loop:
 
         left_text = font_text.render(spanish[left], True, BLACK)
         left_english = font_text.render(english[left], True, BLACK)
-        left_score = font_text.render(searches[left] + " búsquedas (mensual)", True, BLACK)
+        left_score = font_text.render(searches[left] + " búsquedas", True, BLACK)
         right_text = font_text.render(spanish[right], True, BLACK)
 
         left_word = left_text.get_rect()
@@ -234,6 +329,7 @@ while loop:
             if event.type == pygame.QUIT:
                 loop = False
                 intro = False
+                rules = False
                 game = False
                 final = False
             if clickable:
@@ -261,11 +357,12 @@ while loop:
                         new_word = True
                         display_buttons = False
                         clickable = False
+                    print(visited)
 
 
     while final:
         pos = pygame.mouse.get_pos()
-        screen.fill(WHITE)
+        screen.fill(WARM)
         font_title = pygame.font.SysFont("arial bold", 80)
         title_text = font_title.render("Your score: "+str(score), True, BLACK)
         highscore_text = font_title.render("High score: "+str(high_score), True, BLACK)
@@ -292,6 +389,7 @@ while loop:
             if event.type == pygame.QUIT:
                 loop = False
                 intro = False
+                rules = False
                 game = False
                 final = False
             if event.type == pygame.MOUSEBUTTONUP:
