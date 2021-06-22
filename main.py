@@ -21,6 +21,7 @@ LIGHT_BLUE = (153, 204, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 WARM = (255, 246, 237)
+
 loop = True
 
 intro = True
@@ -33,7 +34,7 @@ high_score = 0
 
 def findrandom(visited):
     while True:
-        newint = random.randint(0, 34)
+        newint = random.randint(0, 17)
         if visited[newint - 1] is False:
             break
     visited[newint - 1] = True
@@ -42,12 +43,12 @@ def findrandom(visited):
 
 def checkiffilled(visited):
     a = False  # false = all are visited, true = unvisited
-    for i in range(34):
+    for i in range(17):
         if visited[i] is False:
             a = True
             break
     if a is False:
-        visited[:] = [False] * 34
+        visited[:] = [False] * 17
     return findrandom(visited)
 
 
@@ -56,7 +57,7 @@ while loop:
     screen_H = screen.get_height()
     while intro:
         pos = pygame.mouse.get_pos()
-        screen.fill(WARM)
+        screen.fill(WHITE)
         imagelogo = pygame.image.load("../HigherLower/images/higherorlower.png")
         font_title = pygame.font.SysFont("arial bold", 80)
         title_text = font_title.render("Higher Lower", True, BLACK)
@@ -89,7 +90,7 @@ while loop:
 
     while rules:
         pos = pygame.mouse.get_pos()
-        screen.fill(WARM)
+        screen.fill(WHITE)
         font_title = pygame.font.SysFont("arial bold", 40)
 
         play_text = font_title.render("Continue", True, BLACK)
@@ -142,7 +143,7 @@ while loop:
 
     while rules2:
         pos = pygame.mouse.get_pos()
-        screen.fill(WARM)
+        screen.fill(WHITE)
         font_title = pygame.font.SysFont("arial bold", 40)
 
         play_text = font_title.render("Continue", True, BLACK)
@@ -208,7 +209,7 @@ while loop:
     rect2 = 0
     while game:
         pos = pygame.mouse.get_pos()
-        screen.fill(WARM)
+        screen.fill(WHITE)
         font_text = pygame.font.SysFont("arial", 40)
         font_buttons = pygame.font.SysFont("arial", 23)
         font_score = pygame.font.SysFont("arial", 18)
@@ -255,24 +256,25 @@ while loop:
             screen.blit(right_score, right_searches)
             pause = True
             correct = False
-            screen.blit(right_english, right_english_text)
+
         elif wrong is True:
             screen.blit(imagewrong, image_wrong)
             screen.blit(right_score, right_searches)
             pause = True
-            screen.blit(right_english, right_english_text)
 
 
         Button1 = Higher.get_rect()
         Button2 = Lower.get_rect()
         screen_click = screen.get_rect()
         if display_buttons is True:
-            rect1 = pygame.draw.rect(screen, GREEN, (1250, 350, 250, 80))
-            rect2 = pygame.draw.rect(screen, RED, (1250, 480, 250, 80))
-            Button1.center = (screen_W / 1.3, screen_H - screen_H / 1.77)
+            rect1 = pygame.draw.rect(screen, GREEN, (1250, 400, 250, 80))
+            rect2 = pygame.draw.rect(screen, RED, (1250, 550, 250, 80))
+
+
+            Button1.center = (screen_W / 1.3, screen_H - screen_H / 1.95)
             screen.blit(Higher, Button1)
 
-            Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.35)
+            Button2.center = (screen_W / 1.3, screen_H - screen_H / 2.9)
             screen.blit(Lower, Button2)
 
         if new_word is True and pause is False:
@@ -322,7 +324,7 @@ while loop:
         highscore_number.center = (screen_W / 1.25, screen_H - screen_H / 15)
         screen.blit(highscore, highscore_number)
 
-
+        screen.blit(right_english, right_english_text)
 
         pygame.display.flip()
         for event in pygame.event.get():
@@ -361,7 +363,7 @@ while loop:
 
     while final:
         pos = pygame.mouse.get_pos()
-        screen.fill(WARM)
+        screen.fill(WHITE)
         font_title = pygame.font.SysFont("arial bold", 80)
         title_text = font_title.render("Your score: "+str(score), True, BLACK)
         highscore_text = font_title.render("High score: "+str(high_score), True, BLACK)
