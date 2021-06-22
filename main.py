@@ -242,7 +242,6 @@ while loop:
         right_english_text.center = (screen_W / 1.3, screen_H - screen_H / 1.5)
 
         if pause is True:
-
             pygame.time.wait(4000)
             display_buttons = True
             pause = False
